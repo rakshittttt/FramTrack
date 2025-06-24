@@ -1,0 +1,83 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>🌾 Top 5 Tractor Companies Based on Sales Performance</h1>
+    <p style="font-size: 1.1rem; margin: 1rem 0; color: #666;">
+        Discover the best tractor brands trusted by thousands of farmers. Rankings based on last year's sales data and farmer reviews.
+    </p>
+</div>
+
+<div class="stats" style="background: white; padding: 2rem; border-radius: 10px; margin: 2rem 0; text-align: center;">
+    <h2 style="color: #2c5530; margin-bottom: 1rem;">Why These Top 5?</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <div>
+            <h3 style="color: #4a7c59;">📈 Highest Sales</h3>
+            <p>Based on 2023 sales data</p>
+        </div>
+        <div>
+            <h3 style="color: #4a7c59;">💰 Best Value</h3>
+            <p>Reasonable pricing for quality</p>
+        </div>
+        <div>
+            <h3 style="color: #4a7c59;">⭐ Farmer Verified</h3>
+            <p>Real reviews from farmers</p>
+        </div>
+        <div>
+            <h3 style="color: #4a7c59;">🔧 Reliable Service</h3>
+            <p>Strong after-sales support</p>
+        </div>
+    </div>
+</div>
+
+<div class="company-grid">
+    {% for company in companies %}
+    <div class="card">
+        <div class="rank-badge">Rank #{{ company.sales_rank }}</div>
+        <h2 style="color: #2c5530; margin-bottom: 10px;">{{ company.name }}</h2>
+        
+        <div style="margin: 15px 0;">
+            <strong>Annual Sales:</strong> {{ "{:,}".format(company.annual_sales) }} units<br>
+            <strong>Price Range:</strong> {{ company.price_range }}<br>
+            <strong>Rating:</strong> 
+            <span class="rating">
+                {% for i in range(5) %}
+                    {% if i < company.avg_rating %}⭐{% else %}☆{% endif %}
+                {% endfor %}
+            </span>
+            {{ company.avg_rating }}/5 ({{ company.total_reviews }} reviews)
+        </div>
+        
+        <div style="margin: 15px 0;">
+            <strong>Popular Models:</strong>
+            <ul style="margin-left: 20px; margin-top: 5px;">
+                {% for model in company.popular_models %}
+                <li>{{ model }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <a href="/company/{{ company.id }}" class="btn">View Reviews & Details</a>
+    </div>
+    {% endfor %}
+</div>
+
+<div style="background: white; padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+    <h2 style="color: #2c5530; text-align: center; margin-bottom: 1rem;">How We Rank Tractor Companies</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+        <div style="text-align: center;">
+            <h3 style="color: #4a7c59;">📊 Sales Data</h3>
+            <p>We analyze annual sales figures to identify the most trusted brands in the market.</p>
+        </div>
+        <div style="text-align: center;">
+            <h3 style="color: #4a7c59;">👨‍🌾 Farmer Reviews</h3>
+            <p>Real feedback from verified farmers who have purchased and used these tractors.</p>
+        </div>
+        <div style="text-align: center;">
+            <h3 style="color: #4a7c59;">💵 Value Analysis</h3>
+            <p>We consider price-to-performance ratio to ensure reasonable pricing.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

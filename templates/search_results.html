@@ -1,0 +1,60 @@
+
+{% extends "base.html" %}
+
+{% block title %}Search Results for "{{ query }}"{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <a href="/" style="color: #4a7c59; text-decoration: none;">← Back to Top Companies</a>
+</div>
+
+<h1 style="color: #2c5530; margin-bottom: 1rem;">Search Results for "{{ query }}"</h1>
+
+{% if results %}
+    <p style="color: #666; margin-bottom: 2rem;">Found {{ results|length }} company(ies) matching your search:</p>
+    
+    <div class="company-grid">
+        {% for company in results %}
+        <div class="card">
+            <div class="rank-badge">Sales Rank #{{ company.sales_rank }}</div>
+            <h2 style="color: #2c5530; margin-bottom: 10px;">{{ company.name }}</h2>
+            
+            <div style="margin: 15px 0;">
+                <strong>Annual Sales:</strong> {{ "{:,}".format(company.annual_sales) }} units<br>
+                <strong>Price Range:</strong> {{ company.price_range }}<br>
+                <strong>Rating:</strong> 
+                <span class="rating">
+                    {% for i in range(5) %}
+                        {% if i < company.avg_rating %}⭐{% else %}☆{% endif %}
+                    {% endfor %}
+                </span>
+                {{ company.avg_rating }}/5 ({{ company.total_reviews }} reviews)
+            </div>
+            
+            <div style="margin: 15px 0;">
+                <strong>Popular Models:</strong>
+                <ul style="margin-left: 20px; margin-top: 5px;">
+                    {% for model in company.popular_models %}
+                    <li>{{ model }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <a href="/company/{{ company.id }}" class="btn">View Reviews & Details</a>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card" style="text-align: center; padding: 3rem;">
+        <h2 style="color: #666;">No results found</h2>
+        <p style="color: #666; margin: 1rem 0;">Sorry, we couldn't find any companies or models matching "{{ query }}".</p>
+        <p style="color: #666;">Try searching for:</p>
+        <ul style="list-style: none; padding: 0; margin-top: 1rem;">
+            <li>• Company names (John Deere, Mahindra, etc.)</li>
+            <li>• Tractor models (5075E, 4540, etc.)</li>
+            <li>• General terms (tractor, farming, etc.)</li>
+        </ul>
+        <a href="/" class="btn" style="margin-top: 1rem;">View All Top Companies</a>
+    </div>
+{% endif %}
+{% endblock %}

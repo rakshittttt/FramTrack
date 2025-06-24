@@ -1,0 +1,92 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ company.name }} - Farmer Reviews{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <a href="/" style="color: #4a7c59; text-decoration: none;">← Back to Top Companies</a>
+</div>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <div class="rank-badge">Sales Rank #{{ company.sales_rank }}</div>
+    <h1 style="color: #2c5530; margin-bottom: 20px;">{{ company.name }}</h1>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+        <div>
+            <h3 style="color: #4a7c59;">📈 Sales Performance</h3>
+            <p><strong>Annual Sales:</strong> {{ "{:,}".format(company.annual_sales) }} units</p>
+            <p><strong>Market Position:</strong> #{{ company.sales_rank }} in India</p>
+        </div>
+        
+        <div>
+            <h3 style="color: #4a7c59;">💰 Pricing</h3>
+            <p><strong>Price Range:</strong> {{ company.price_range }}</p>
+            <p><strong>Value Rating:</strong> Excellent for the price point</p>
+        </div>
+        
+        <div>
+            <h3 style="color: #4a7c59;">⭐ Customer Satisfaction</h3>
+            <p><strong>Overall Rating:</strong> 
+                <span class="rating">
+                    {% for i in range(5) %}
+                        {% if i < company.avg_rating %}⭐{% else %}☆{% endif %}
+                    {% endfor %}
+                </span>
+                {{ company.avg_rating }}/5
+            </p>
+            <p><strong>Total Reviews:</strong> {{ company.total_reviews }} verified farmers</p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="color: #2c5530; margin-bottom: 1rem;">Popular Models</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        {% for model in company.popular_models %}
+        <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; text-align: center;">
+            <h4 style="color: #4a7c59;">{{ model }}</h4>
+            <p style="font-size: 0.9rem; color: #666;">High Performance</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="color: #2c5530; margin-bottom: 1rem;">Farmer Reviews</h2>
+    {% if reviews %}
+        {% for review in reviews %}
+        <div style="border-left: 4px solid #4a7c59; padding-left: 1rem; margin-bottom: 1.5rem; background: #f8f9fa; padding: 1rem; border-radius: 0 8px 8px 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div>
+                    <strong style="color: #2c5530;">{{ review.farmer_name }}</strong>
+                    <span style="color: #666; font-size: 0.9rem;">- {{ review.location }}</span>
+                    {% if review.verified_purchase %}
+                    <span style="background: #28a745; color: white; font-size: 0.8rem; padding: 2px 8px; border-radius: 12px; margin-left: 10px;">✓ Verified Purchase</span>
+                    {% endif %}
+                </div>
+                <div class="rating">
+                    {% for i in range(5) %}
+                        {% if i < review.rating %}⭐{% else %}☆{% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <p style="margin-bottom: 10px;"><strong>Model:</strong> {{ review.model }}</p>
+            <p style="font-style: italic;">"{{ review.review }}"</p>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p style="text-align: center; color: #666; padding: 2rem;">No reviews available yet. Be the first to review!</p>
+    {% endif %}
+</div>
+
+<div class="card" style="background: linear-gradient(135deg, #e8f5e8, #f0f8f0);">
+    <h3 style="color: #2c5530; margin-bottom: 1rem;">Why Choose {{ company.name }}?</h3>
+    <ul style="list-style-type: none; padding: 0;">
+        <li style="margin-bottom: 10px;">✅ <strong>Proven Sales Record:</strong> {{ "{:,}".format(company.annual_sales) }} units sold last year</li>
+        <li style="margin-bottom: 10px;">✅ <strong>Trusted by Farmers:</strong> {{ company.avg_rating }}/5 rating from {{ company.total_reviews }} reviews</li>
+        <li style="margin-bottom: 10px;">✅ <strong>Reasonable Pricing:</strong> {{ company.price_range }} range fits various budgets</li>
+        <li style="margin-bottom: 10px;">✅ <strong>Multiple Options:</strong> {{ company.popular_models|length }} popular models to choose from</li>
+    </ul>
+</div>
+{% endblock %}
