@@ -1,0 +1,210 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>📦 Tractor Availability Tracker</h1>
+    <p>Real-time stock updates and delivery timelines from top manufacturers</p>
+</div>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <h2>🔍 Filter by Availability</h2>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+        <select id="stock-filter" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            <option value="all">All Stock Status</option>
+            <option value="In Stock">In Stock</option>
+            <option value="Limited Stock">Limited Stock</option>
+            <option value="Pre-Order">Pre-Order</option>
+            <option value="Out of Stock">Out of Stock</option>
+        </select>
+        <select id="delivery-filter" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            <option value="all">All Delivery Times</option>
+            <option value="immediate">Immediate (1-2 weeks)</option>
+            <option value="fast">Fast (2-4 weeks)</option>
+            <option value="normal">Normal (4-8 weeks)</option>
+        </select>
+        <button onclick="filterResults()" class="btn">Apply Filters</button>
+    </div>
+</div>
+
+<div id="availability-grid">
+    {% for company in companies %}
+    <div class="card company-card" data-stock="{{ company.availability_status }}" data-delivery="{{ company.delivery_time }}">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="color: #2c5530;">{{ company.name }}</h3>
+            <div class="status-badge status-{{ company.availability_status.replace(' ', '-').lower() }}">
+                {{ company.availability_status }}
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0;">
+            <div>
+                <strong>🚚 Delivery Time:</strong><br>
+                <span style="color: #4a7c59;">{{ company.delivery_time }}</span>
+            </div>
+            <div>
+                <strong>🏪 Service Centers:</strong><br>
+                <span style="color: #4a7c59;">{{ company.service_centers }} locations</span>
+            </div>
+            <div>
+                <strong>⚡ Fuel Efficiency:</strong><br>
+                <span style="color: #4a7c59;">{{ company.fuel_efficiency }}</span>
+            </div>
+            <div>
+                <strong>🛡️ Warranty:</strong><br>
+                <span style="color: #4a7c59;">{{ company.warranty_years }} years</span>
+            </div>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+            <h4 style="color: #2c5530; margin-bottom: 10px;">📋 Popular Models Stock Status</h4>
+            {% for model in company.popular_models %}
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span>{{ model }}</span>
+                <span class="stock-indicator stock-{{ ['in-stock', 'limited', 'pre-order'][loop.index0 % 3] }}">
+                    {% set statuses = ['✅ Available', '⚠️ Limited', '⏳ Pre-Order'] %}
+                    {{ statuses[loop.index0 % 3] }}
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div style="display: flex; gap: 10px;">
+            <a href="/company/{{ company.id }}" class="btn" style="flex: 1;">View Details</a>
+            <button onclick="requestNotification({{ company.id }})" class="btn" style="background: #17a2b8; flex: 1;">
+                🔔 Notify Me
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="card" style="margin-top: 2rem;">
+    <h2>📊 Market Availability Insights</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <div style="text-align: center; background: #e8f5e8; padding: 1rem; border-radius: 8px;">
+            <h3 style="color: #27ae60; margin-bottom: 10px;">65%</h3>
+            <p>Models in stock</p>
+        </div>
+        <div style="text-align: center; background: #fff3cd; padding: 1rem; border-radius: 8px;">
+            <h3 style="color: #f39c12; margin-bottom: 10px;">23%</h3>
+            <p>Limited availability</p>
+        </div>
+        <div style="text-align: center; background: #cce5ff; padding: 1rem; border-radius: 8px;">
+            <h3 style="color: #3498db; margin-bottom: 10px;">12%</h3>
+            <p>Pre-order only</p>
+        </div>
+        <div style="text-align: center; background: #f8d7da; padding: 1rem; border-radius: 8px;">
+            <h3 style="color: #dc3545; margin-bottom: 10px;">3.2 weeks</h3>
+            <p>Average delivery time</p>
+        </div>
+    </div>
+</div>
+
+<style>
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.status-in-stock {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-limited-stock {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-pre-order {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.status-out-of-stock {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.stock-indicator {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.stock-in-stock {
+    background: #d4edda;
+    color: #155724;
+}
+
+.stock-limited {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.stock-pre-order {
+    background: #cce5ff;
+    color: #004085;
+}
+
+#availability-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+</style>
+
+<script>
+function filterResults() {
+    const stockFilter = document.getElementById('stock-filter').value;
+    const deliveryFilter = document.getElementById('delivery-filter').value;
+    const cards = document.querySelectorAll('.company-card');
+    
+    cards.forEach(card => {
+        let showCard = true;
+        
+        // Filter by stock status
+        if (stockFilter !== 'all') {
+            const cardStock = card.getAttribute('data-stock');
+            if (cardStock !== stockFilter) {
+                showCard = false;
+            }
+        }
+        
+        // Filter by delivery time
+        if (deliveryFilter !== 'all' && showCard) {
+            const cardDelivery = card.getAttribute('data-delivery');
+            switch(deliveryFilter) {
+                case 'immediate':
+                    if (!cardDelivery.includes('1-2') && !cardDelivery.includes('2-3')) {
+                        showCard = false;
+                    }
+                    break;
+                case 'fast':
+                    if (!cardDelivery.includes('2-3') && !cardDelivery.includes('3-4')) {
+                        showCard = false;
+                    }
+                    break;
+                case 'normal':
+                    if (!cardDelivery.includes('4-') && !cardDelivery.includes('6-8')) {
+                        showCard = false;
+                    }
+                    break;
+            }
+        }
+        
+        card.style.display = showCard ? 'block' : 'none';
+    });
+}
+
+function requestNotification(companyId) {
+    // In a real app, this would send a request to the backend
+    alert(`✅ You'll be notified when new stock arrives for company ID: ${companyId}`);
+}
+</script>
+{% endblock %}

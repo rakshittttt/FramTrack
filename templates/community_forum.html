@@ -1,0 +1,183 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>👥 Farmer Community Forum</h1>
+    <p>Connect with fellow farmers, share experiences, and get expert advice</p>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+    <div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2 style="color: #2c5530;">💬 Recent Discussions</h2>
+            <button class="btn" onclick="showNewPostForm()">+ New Post</button>
+        </div>
+        
+        <div id="new-post-form" style="display: none;" class="card">
+            <h3>Create New Post</h3>
+            <form style="margin: 1rem 0;">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Title:</label>
+                    <input type="text" id="post-title" placeholder="Enter your question or topic" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Category:</label>
+                    <select id="post-category" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                        <option value="General Discussion">General Discussion</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Crop Advice">Crop Advice</option>
+                        <option value="Equipment Reviews">Equipment Reviews</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Description:</label>
+                    <textarea id="post-description" rows="4" placeholder="Describe your question or share your experience..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" onclick="submitPost()" class="btn">Post Question</button>
+                    <button type="button" onclick="hideNewPostForm()" style="background: #6c757d;" class="btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+        
+        {% for post in posts %}
+        <div class="card">
+            <div style="display: flex; justify-content: between; align-items: start; margin-bottom: 10px;">
+                <div style="flex: 1;">
+                    <h3 style="color: #2c5530; margin-bottom: 5px;">{{ post.title }}</h3>
+                    <div style="display: flex; align-items: center; gap: 15px; color: #666; font-size: 0.9rem;">
+                        <span>👤 {{ post.author }}</span>
+                        <span>💬 {{ post.replies }} replies</span>
+                        <span>🕐 {{ post.last_activity }}</span>
+                    </div>
+                </div>
+                <span style="background: #4a7c59; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem;">
+                    {{ post.category }}
+                </span>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button class="btn" style="padding: 5px 15px; font-size: 0.9rem;">View Discussion</button>
+                <button style="background: #6c757d; padding: 5px 15px; font-size: 0.9rem;" class="btn">Follow</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div>
+        <div class="card">
+            <h3>🏆 Top Contributors</h3>
+            <div style="margin: 1rem 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <div>
+                        <div style="font-weight: bold; color: #2c5530;">Expert_Mechanic</div>
+                        <div style="font-size: 0.8rem; color: #666;">Maintenance Expert</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: bold; color: #4a7c59;">1,250 pts</div>
+                        <div style="font-size: 0.8rem;">⭐⭐⭐⭐⭐</div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <div>
+                        <div style="font-weight: bold; color: #2c5530;">Farmer_Singh</div>
+                        <div style="font-size: 0.8rem; color: #666;">20+ Years Experience</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: bold; color: #4a7c59;">980 pts</div>
+                        <div style="font-size: 0.8rem;">⭐⭐⭐⭐</div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+                    <div>
+                        <div style="font-weight: bold; color: #2c5530;">AgriExpert_Raj</div>
+                        <div style="font-size: 0.8rem; color: #666;">Agricultural Engineer</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: bold; color: #4a7c59;">850 pts</div>
+                        <div style="font-size: 0.8rem;">⭐⭐⭐⭐</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>🔥 Trending Topics</h3>
+            <div style="margin: 1rem 0;">
+                <div style="margin-bottom: 10px;">
+                    <a href="#" style="color: #4a7c59; text-decoration: none; font-weight: bold;">#TractorMaintenance</a>
+                    <span style="color: #666; font-size: 0.8rem;">(234 posts)</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <a href="#" style="color: #4a7c59; text-decoration: none; font-weight: bold;">#BestTractorBrand</a>
+                    <span style="color: #666; font-size: 0.8rem;">(189 posts)</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <a href="#" style="color: #4a7c59; text-decoration: none; font-weight: bold;">#FuelEfficiency</a>
+                    <span style="color: #666; font-size: 0.8rem;">(156 posts)</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <a href="#" style="color: #4a7c59; text-decoration: none; font-weight: bold;">#GovernmentSubsidy</a>
+                    <span style="color: #666; font-size: 0.8rem;">(143 posts)</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <a href="#" style="color: #4a7c59; text-decoration: none; font-weight: bold;">#SecondHandTractors</a>
+                    <span style="color: #666; font-size: 0.8rem;">(128 posts)</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📊 Community Stats</h3>
+            <div style="margin: 1rem 0;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Total Members:</span>
+                    <span style="font-weight: bold; color: #4a7c59;">12,450</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Questions Asked:</span>
+                    <span style="font-weight: bold; color: #4a7c59;">3,280</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Answers Provided:</span>
+                    <span style="font-weight: bold; color: #4a7c59;">8,650</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Active Today:</span>
+                    <span style="font-weight: bold; color: #4a7c59;">847</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showNewPostForm() {
+    document.getElementById('new-post-form').style.display = 'block';
+}
+
+function hideNewPostForm() {
+    document.getElementById('new-post-form').style.display = 'none';
+}
+
+function submitPost() {
+    const title = document.getElementById('post-title').value;
+    const category = document.getElementById('post-category').value;
+    const description = document.getElementById('post-description').value;
+    
+    if (!title || !description) {
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    // Here you would normally send to backend
+    alert('Post submitted successfully! (Demo mode)');
+    hideNewPostForm();
+    
+    // Clear form
+    document.getElementById('post-title').value = '';
+    document.getElementById('post-description').value = '';
+}
+</script>
+{% endblock %}

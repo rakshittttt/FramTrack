@@ -1,0 +1,111 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>💰 Tractor Finance Calculator</h1>
+    <p>Calculate EMI, compare financing options, and find the best deals</p>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <div class="card">
+        <h2>EMI Calculator</h2>
+        <div style="margin: 1rem 0;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Tractor Price ($):</label>
+            <input type="number" id="price" placeholder="50000" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        </div>
+        <div style="margin: 1rem 0;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Down Payment ($):</label>
+            <input type="number" id="downpayment" placeholder="10000" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        </div>
+        <div style="margin: 1rem 0;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Interest Rate (%):</label>
+            <input type="number" id="interest" placeholder="8.5" step="0.1" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        </div>
+        <div style="margin: 1rem 0;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Loan Tenure (years):</label>
+            <select id="tenure" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <option value="3">3 years</option>
+                <option value="5" selected>5 years</option>
+                <option value="7">7 years</option>
+                <option value="10">10 years</option>
+            </select>
+        </div>
+        <button onclick="calculateEMI()" class="btn" style="width: 100%;">Calculate EMI</button>
+        
+        <div id="emi-result" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+            <h3 style="color: #2c5530;">EMI Calculation Result</h3>
+            <div id="emi-details"></div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>Compare Financing Options</h2>
+        <div style="margin: 1rem 0;">
+            {% for company in companies %}
+            <div style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                <h4 style="color: #4a7c59;">{{ company.name }}</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                    <div><strong>EMI from:</strong> ${{ company.emi_starting }}/month</div>
+                    <div><strong>Financing:</strong> {% if company.financing_available %}✅ Available{% else %}❌ Not Available{% endif %}</div>
+                </div>
+                <a href="/company/{{ company.id }}" class="btn" style="margin-top: 10px; padding: 5px 15px; font-size: 0.9rem;">View Details</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 2rem;">
+    <h2>💡 Financing Tips for Farmers</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+        <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+            <h4 style="color: #4a7c59;">🏦 Government Subsidies</h4>
+            <p>Check for agricultural equipment subsidies in your state. Many governments offer 25-50% subsidies for tractors.</p>
+        </div>
+        <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+            <h4 style="color: #4a7c59;">📋 Required Documents</h4>
+            <p>Keep ready: Aadhar, PAN, Income proof, Land documents, Bank statements, and crop insurance papers.</p>
+        </div>
+        <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+            <h4 style="color: #4a7c59;">⏰ Best Time to Buy</h4>
+            <p>Purchase during festive seasons or year-end for better deals and financing options.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function calculateEMI() {
+    const price = parseFloat(document.getElementById('price').value);
+    const downPayment = parseFloat(document.getElementById('downpayment').value);
+    const interestRate = parseFloat(document.getElementById('interest').value);
+    const tenure = parseInt(document.getElementById('tenure').value);
+    
+    if (!price || !downPayment || !interestRate || !tenure) {
+        alert('Please fill all fields');
+        return;
+    }
+    
+    const loanAmount = price - downPayment;
+    const monthlyRate = interestRate / (12 * 100);
+    const numberOfMonths = tenure * 12;
+    
+    const emi = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numberOfMonths)) / 
+                (Math.pow(1 + monthlyRate, numberOfMonths) - 1);
+    
+    const totalAmount = emi * numberOfMonths;
+    const totalInterest = totalAmount - loanAmount;
+    
+    document.getElementById('emi-details').innerHTML = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div><strong>Monthly EMI:</strong> $${emi.toFixed(2)}</div>
+            <div><strong>Total Interest:</strong> $${totalInterest.toFixed(2)}</div>
+            <div><strong>Total Amount:</strong> $${totalAmount.toFixed(2)}</div>
+            <div><strong>Loan Amount:</strong> $${loanAmount.toFixed(2)}</div>
+        </div>
+    `;
+    
+    document.getElementById('emi-result').style.display = 'block';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,234 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>📊 Tractor Market Analytics Dashboard</h1>
+    <p>Data-driven insights into tractor sales, trends, and market preferences</p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+    <div class="card" style="text-align: center; background: linear-gradient(135deg, #4a7c59, #2c5530); color: white;">
+        <h3>Total Tractors Sold</h3>
+        <div style="font-size: 2.5rem; font-weight: bold; margin: 10px 0;">{{ "{:,}".format(analytics.total_tractors_sold) }}</div>
+        <p>Last 12 months</p>
+    </div>
+    <div class="card" style="text-align: center; background: linear-gradient(135deg, #3498db, #2980b9); color: white;">
+        <h3>Average Price</h3>
+        <div style="font-size: 2.5rem; font-weight: bold; margin: 10px 0;">${{ "{:,}".format(analytics.avg_price) }}</div>
+        <p>Across all brands</p>
+    </div>
+    <div class="card" style="text-align: center; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white;">
+        <h3>Most Popular</h3>
+        <div style="font-size: 1.8rem; font-weight: bold; margin: 10px 0;">{{ analytics.most_popular_brand }}</div>
+        <p>By sales volume</p>
+    </div>
+    <div class="card" style="text-align: center; background: linear-gradient(135deg, #f39c12, #e67e22); color: white;">
+        <h3>Market Growth</h3>
+        <div style="font-size: 2.5rem; font-weight: bold; margin: 10px 0;">+18%</div>
+        <p>Year over year</p>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+    <div>
+        <div class="card">
+            <h2>📈 Monthly Sales Trends</h2>
+            <canvas id="salesChart" width="400" height="200"></canvas>
+        </div>
+        
+        <div class="card">
+            <h2>🏆 Brand Performance Comparison</h2>
+            <div style="margin: 1rem 0;">
+                {% set brands = ['John Deere', 'Mahindra', 'New Holland', 'Kubota', 'Case IH'] %}
+                {% set sales = [45000, 38000, 32000, 28000, 25000] %}
+                {% for brand in brands %}
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="font-weight: bold;">{{ brand }}</span>
+                        <span style="color: #4a7c59;">{{ "{:,}".format(sales[loop.index0]) }} units</span>
+                    </div>
+                    <div style="background: #e0e0e0; height: 12px; border-radius: 6px;">
+                        <div style="background: linear-gradient(90deg, #4a7c59, #2c5530); width: {{ (sales[loop.index0] / 45000 * 100)|round }}%; height: 100%; border-radius: 6px;"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div>
+        <div class="card">
+            <h3>🗺️ Regional Preferences</h3>
+            <div style="margin: 1rem 0;">
+                {% for region, preference in analytics.regional_preferences.items() %}
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <div>
+                        <div style="font-weight: bold; color: #2c5530;">{{ region }}</div>
+                        <div style="font-size: 0.8rem; color: #666;">Most preferred</div>
+                    </div>
+                    <div style="color: #4a7c59; font-weight: bold;">{{ preference }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📊 Market Share</h3>
+            <div style="margin: 1rem 0;">
+                <div style="position: relative; width: 200px; height: 200px; margin: 0 auto;">
+                    <canvas id="marketShareChart" width="200" height="200"></canvas>
+                </div>
+                <div style="margin-top: 1rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="color: #4a7c59;">● John Deere</span>
+                        <span>26.8%</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="color: #3498db;">● Mahindra</span>
+                        <span>22.6%</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="color: #e74c3c;">● New Holland</span>
+                        <span>19.0%</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="color: #f39c12;">● Kubota</span>
+                        <span>16.7%</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #9b59b6;">● Case IH</span>
+                        <span>14.9%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📈 Key Metrics</h3>
+            <div style="margin: 1rem 0;">
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Customer Satisfaction</span>
+                        <span style="font-weight: bold; color: #27ae60;">4.3/5</span>
+                    </div>
+                    <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
+                        <div style="background: #27ae60; width: 86%; height: 100%; border-radius: 4px;"></div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Service Quality</span>
+                        <span style="font-weight: bold; color: #3498db;">4.1/5</span>
+                    </div>
+                    <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
+                        <div style="background: #3498db; width: 82%; height: 100%; border-radius: 4px;"></div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Value for Money</span>
+                        <span style="font-weight: bold; color: #f39c12;">3.9/5</span>
+                    </div>
+                    <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
+                        <div style="background: #f39c12; width: 78%; height: 100%; border-radius: 4px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 2rem;">
+    <h2>💡 Market Insights & Predictions</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+        <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px;">
+            <h4 style="color: #2c5530;">🔍 Trend Analysis</h4>
+            <p>Compact tractors (20-50 HP) are showing the highest growth rate at 23% year-over-year, driven by small and medium farm adoption.</p>
+        </div>
+        <div style="background: #fff3cd; padding: 1rem; border-radius: 8px;">
+            <h4 style="color: #2c5530;">📅 Seasonal Patterns</h4>
+            <p>Peak sales occur during pre-monsoon (April-June) and post-harvest (October-December) seasons, with 65% of annual sales in these periods.</p>
+        </div>
+        <div style="background: #cce5ff; padding: 1rem; border-radius: 8px;">
+            <h4 style="color: #2c5530;">🎯 Price Sensitivity</h4>
+            <p>Farmers are increasingly price-conscious, with 78% considering financing options and 45% comparing prices across multiple brands before purchase.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+// Sales Chart
+const salesCtx = document.getElementById('salesChart').getContext('2d');
+const monthlyData = {{ analytics.monthly_sales|safe }};
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+
+// Simple line chart implementation
+salesCtx.beginPath();
+salesCtx.strokeStyle = '#4a7c59';
+salesCtx.lineWidth = 3;
+
+const maxSales = Math.max(...monthlyData);
+const chartWidth = 400;
+const chartHeight = 180;
+const padding = 20;
+
+// Draw grid lines
+salesCtx.strokeStyle = '#e0e0e0';
+salesCtx.lineWidth = 1;
+for (let i = 0; i <= 5; i++) {
+    const y = padding + (i * (chartHeight - 2 * padding)) / 5;
+    salesCtx.beginPath();
+    salesCtx.moveTo(padding, y);
+    salesCtx.lineTo(chartWidth - padding, y);
+    salesCtx.stroke();
+}
+
+// Draw data line
+salesCtx.strokeStyle = '#4a7c59';
+salesCtx.lineWidth = 3;
+salesCtx.beginPath();
+
+monthlyData.forEach((value, index) => {
+    const x = padding + (index * (chartWidth - 2 * padding)) / (monthlyData.length - 1);
+    const y = chartHeight - padding - ((value / maxSales) * (chartHeight - 2 * padding));
+    
+    if (index === 0) {
+        salesCtx.moveTo(x, y);
+    } else {
+        salesCtx.lineTo(x, y);
+    }
+    
+    // Draw data points
+    salesCtx.fillStyle = '#4a7c59';
+    salesCtx.beginPath();
+    salesCtx.arc(x, y, 4, 0, 2 * Math.PI);
+    salesCtx.fill();
+});
+
+salesCtx.stroke();
+
+// Market Share Pie Chart
+const pieCtx = document.getElementById('marketShareChart').getContext('2d');
+const marketData = [26.8, 22.6, 19.0, 16.7, 14.9];
+const colors = ['#4a7c59', '#3498db', '#e74c3c', '#f39c12', '#9b59b6'];
+
+let currentAngle = 0;
+const centerX = 100;
+const centerY = 100;
+const radius = 80;
+
+marketData.forEach((percentage, index) => {
+    const sliceAngle = (percentage / 100) * 2 * Math.PI;
+    
+    pieCtx.beginPath();
+    pieCtx.moveTo(centerX, centerY);
+    pieCtx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+    pieCtx.closePath();
+    pieCtx.fillStyle = colors[index];
+    pieCtx.fill();
+    
+    currentAngle += sliceAngle;
+});
+</script>
+{% endblock %}

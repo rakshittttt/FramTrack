@@ -69,6 +69,25 @@
             background: #f0f0f0;
         }
 
+        .main-nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .main-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .main-nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
         main {
             padding: 2rem 0;
             min-height: calc(100vh - 200px);
@@ -140,6 +159,15 @@
         <div class="container">
             <div class="header-content">
             <div class="logo">🚜 {{ get_text('title') }}</div>
+            <nav class="main-nav">
+                <a href="/">Home</a>
+                <a href="/ai-recommendations">🤖 AI Recommendations</a>
+                <a href="/finance-calculator">💰 Finance Calculator</a>
+                <a href="/weather-alerts">🌦️ Weather Alerts</a>
+                <a href="/community-forum">👥 Community</a>
+                <a href="/availability-tracker">📦 Availability</a>
+                <a href="/analytics-dashboard">📊 Analytics</a>
+            </nav>
             <div style="display: flex; align-items: center; gap: 20px;">
                 <div class="language-selector">
                     <select onchange="changeLanguage(this.value)" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">

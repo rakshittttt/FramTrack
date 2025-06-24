@@ -1,0 +1,108 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>🤖 AI-Powered Tractor Recommendations</h1>
+    <p>Get personalized tractor recommendations based on your farm size, crop type, and budget</p>
+</div>
+
+<div class="card">
+    <h2>Tell us about your farm</h2>
+    <div id="recommendation-form">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1rem 0;">
+            <div>
+                <label for="farm-size" style="display: block; margin-bottom: 5px; font-weight: bold;">Farm Size (acres):</label>
+                <input type="number" id="farm-size" placeholder="e.g., 25" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            </div>
+            <div>
+                <label for="crop-type" style="display: block; margin-bottom: 5px; font-weight: bold;">Primary Crop:</label>
+                <select id="crop-type" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <option value="wheat">Wheat</option>
+                    <option value="rice">Rice</option>
+                    <option value="cotton">Cotton</option>
+                    <option value="sugarcane">Sugarcane</option>
+                    <option value="vegetables">Vegetables</option>
+                    <option value="fruits">Fruits</option>
+                </select>
+            </div>
+            <div>
+                <label for="budget" style="display: block; margin-bottom: 5px; font-weight: bold;">Budget (USD):</label>
+                <input type="number" id="budget" placeholder="e.g., 50000" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            </div>
+        </div>
+        <button onclick="getRecommendations()" class="btn" style="width: 100%; padding: 15px; font-size: 1.1rem;">
+            Get AI Recommendations 🚀
+        </button>
+    </div>
+</div>
+
+<div id="recommendations-result" style="display: none;">
+    <h2 style="color: #2c5530; margin: 2rem 0 1rem 0;">🎯 Your Personalized Recommendations</h2>
+    <div id="recommendations-list"></div>
+</div>
+
+<script>
+async function getRecommendations() {
+    const farmSize = document.getElementById('farm-size').value;
+    const cropType = document.getElementById('crop-type').value;
+    const budget = document.getElementById('budget').value;
+    
+    if (!farmSize || !budget) {
+        alert('Please fill in all fields');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/get-recommendations', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                farm_size: farmSize,
+                crop_type: cropType,
+                budget: budget
+            })
+        });
+        
+        const recommendations = await response.json();
+        displayRecommendations(recommendations);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to get recommendations. Please try again.');
+    }
+}
+
+function displayRecommendations(recommendations) {
+    const resultDiv = document.getElementById('recommendations-result');
+    const listDiv = document.getElementById('recommendations-list');
+    
+    listDiv.innerHTML = '';
+    
+    recommendations.forEach((rec, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="color: #2c5530;">#${index + 1} ${rec.name}</h3>
+                <div style="background: #4a7c59; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold;">
+                    ${rec.match_score}% Match
+                </div>
+            </div>
+            <p style="color: #666; margin-bottom: 1rem;"><strong>Why this recommendation:</strong> ${rec.reason}</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div><strong>Price Range:</strong> ${rec.price_range}</div>
+                <div><strong>EMI from:</strong> $${rec.emi_starting}/month</div>
+                <div><strong>Fuel Efficiency:</strong> ${rec.fuel_efficiency}</div>
+                <div><strong>Warranty:</strong> ${rec.warranty_years} years</div>
+            </div>
+            <a href="/company/${rec.id}" class="btn" style="margin-top: 1rem;">View Details</a>
+        `;
+        listDiv.appendChild(card);
+    });
+    
+    resultDiv.style.display = 'block';
+}
+</script>
+{% endblock %}

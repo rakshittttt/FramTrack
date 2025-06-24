@@ -1,6 +1,8 @@
 
 from flask import Flask, render_template, request, jsonify, session
 import json
+import random
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-for-sessions'
@@ -104,7 +106,14 @@ TRACTOR_COMPANIES = [
         "price_range": "$35,000 - $150,000",
         "popular_models": ["5075E", "6120M", "8R Series"],
         "avg_rating": 4.5,
-        "total_reviews": 1250
+        "total_reviews": 1250,
+        "financing_available": True,
+        "emi_starting": 2800,
+        "fuel_efficiency": "12-15 L/hr",
+        "warranty_years": 4,
+        "service_centers": 450,
+        "availability_status": "In Stock",
+        "delivery_time": "2-3 weeks"
     },
     {
         "id": 2,
@@ -114,7 +123,14 @@ TRACTOR_COMPANIES = [
         "price_range": "$25,000 - $80,000",
         "popular_models": ["2638 HST", "4540 4WD", "6075 Power+"],
         "avg_rating": 4.3,
-        "total_reviews": 890
+        "total_reviews": 890,
+        "financing_available": True,
+        "emi_starting": 2200,
+        "fuel_efficiency": "10-13 L/hr",
+        "warranty_years": 3,
+        "service_centers": 380,
+        "availability_status": "Limited Stock",
+        "delivery_time": "3-4 weeks"
     },
     {
         "id": 3,
@@ -124,7 +140,14 @@ TRACTOR_COMPANIES = [
         "price_range": "$30,000 - $120,000",
         "popular_models": ["T4.75", "T6.180", "T7.315"],
         "avg_rating": 4.2,
-        "total_reviews": 720
+        "total_reviews": 720,
+        "financing_available": True,
+        "emi_starting": 2500,
+        "fuel_efficiency": "11-14 L/hr",
+        "warranty_years": 3,
+        "service_centers": 320,
+        "availability_status": "In Stock",
+        "delivery_time": "2-3 weeks"
     },
     {
         "id": 4,
@@ -134,7 +157,14 @@ TRACTOR_COMPANIES = [
         "price_range": "$20,000 - $90,000",
         "popular_models": ["M7-172", "L3901", "BX2380"],
         "avg_rating": 4.4,
-        "total_reviews": 650
+        "total_reviews": 650,
+        "financing_available": True,
+        "emi_starting": 1800,
+        "fuel_efficiency": "9-12 L/hr",
+        "warranty_years": 5,
+        "service_centers": 280,
+        "availability_status": "Pre-Order",
+        "delivery_time": "6-8 weeks"
     },
     {
         "id": 5,
@@ -144,7 +174,74 @@ TRACTOR_COMPANIES = [
         "price_range": "$40,000 - $180,000",
         "popular_models": ["Farmall 75A", "Maxxum 145", "Magnum 340"],
         "avg_rating": 4.1,
-        "total_reviews": 580
+        "total_reviews": 580,
+        "financing_available": True,
+        "emi_starting": 3200,
+        "fuel_efficiency": "13-16 L/hr",
+        "warranty_years": 4,
+        "service_centers": 250,
+        "availability_status": "In Stock",
+        "delivery_time": "3-4 weeks"
+    }
+]
+
+# AI Recommendation system data
+CROP_TRACTOR_MAP = {
+    'wheat': [1, 2, 3],  # John Deere, Mahindra, New Holland
+    'rice': [2, 4, 1],   # Mahindra, Kubota, John Deere
+    'cotton': [1, 5, 3], # John Deere, Case IH, New Holland
+    'sugarcane': [5, 1, 2], # Case IH, John Deere, Mahindra
+    'vegetables': [4, 2, 3], # Kubota, Mahindra, New Holland
+    'fruits': [4, 3, 1]  # Kubota, New Holland, John Deere
+}
+
+# Weather alerts data
+WEATHER_ALERTS = [
+    {
+        "region": "Punjab",
+        "alert": "Heavy rainfall expected. Check hydraulic systems and engine protection.",
+        "severity": "High",
+        "date": datetime.now().strftime("%Y-%m-%d")
+    },
+    {
+        "region": "Gujarat", 
+        "alert": "Dust storm warning. Clean air filters and check engine oil.",
+        "severity": "Medium",
+        "date": (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
+    },
+    {
+        "region": "Haryana",
+        "alert": "High temperature forecast. Monitor coolant levels.",
+        "severity": "Medium", 
+        "date": (datetime.now() + timedelta(days=2)).strftime("%Y-%m-%d")
+    }
+]
+
+# Community forum data
+FORUM_POSTS = [
+    {
+        "id": 1,
+        "title": "Best tractor for wheat farming in Punjab?",
+        "author": "Farmer_Singh",
+        "replies": 12,
+        "last_activity": "2 hours ago",
+        "category": "General Discussion"
+    },
+    {
+        "id": 2,
+        "title": "Maintenance tips for monsoon season",
+        "author": "Expert_Mechanic",
+        "replies": 8,
+        "last_activity": "5 hours ago",
+        "category": "Maintenance"
+    },
+    {
+        "id": 3,
+        "title": "Financing options comparison",
+        "author": "Budget_Farmer",
+        "replies": 15,
+        "last_activity": "1 day ago",
+        "category": "Finance"
     }
 ]
 
@@ -236,6 +333,69 @@ def search():
                         break
     
     return render_template('search_results.html', results=results, query=query, get_text=get_text, current_lang=get_current_language())
+
+@app.route('/ai-recommendations')
+def ai_recommendations():
+    return render_template('ai_recommendations.html', get_text=get_text, current_lang=get_current_language())
+
+@app.route('/get-recommendations', methods=['POST'])
+def get_recommendations():
+    data = request.get_json()
+    farm_size = float(data.get('farm_size', 10))
+    crop_type = data.get('crop_type', 'wheat').lower()
+    budget = float(data.get('budget', 50000))
+    
+    # AI recommendation logic
+    recommended_ids = CROP_TRACTOR_MAP.get(crop_type, [1, 2, 3])
+    recommendations = []
+    
+    for company_id in recommended_ids[:3]:  # Top 3 recommendations
+        company = next((c for c in TRACTOR_COMPANIES if c['id'] == company_id), None)
+        if company:
+            # Calculate match score based on multiple factors
+            score = random.randint(85, 98)  # Simulated AI score
+            recommendation = {
+                **company,
+                'match_score': score,
+                'reason': f"Perfect for {crop_type} farming on {farm_size} acres"
+            }
+            recommendations.append(recommendation)
+    
+    return jsonify(recommendations)
+
+@app.route('/finance-calculator')
+def finance_calculator():
+    return render_template('finance_calculator.html', companies=TRACTOR_COMPANIES, get_text=get_text, current_lang=get_current_language())
+
+@app.route('/weather-alerts')
+def weather_alerts():
+    return render_template('weather_alerts.html', alerts=WEATHER_ALERTS, get_text=get_text, current_lang=get_current_language())
+
+@app.route('/community-forum')
+def community_forum():
+    return render_template('community_forum.html', posts=FORUM_POSTS, get_text=get_text, current_lang=get_current_language())
+
+@app.route('/availability-tracker')
+def availability_tracker():
+    return render_template('availability_tracker.html', companies=TRACTOR_COMPANIES, get_text=get_text, current_lang=get_current_language())
+
+@app.route('/analytics-dashboard')
+def analytics_dashboard():
+    # Generate sample analytics data
+    analytics_data = {
+        'total_tractors_sold': sum(c['annual_sales'] for c in TRACTOR_COMPANIES),
+        'avg_price': 75000,
+        'most_popular_brand': 'John Deere',
+        'monthly_sales': [3200, 3800, 4100, 3900, 4500, 5200],
+        'regional_preferences': {
+            'Punjab': 'John Deere',
+            'Gujarat': 'Mahindra', 
+            'Haryana': 'New Holland',
+            'UP': 'Kubota',
+            'Rajasthan': 'Case IH'
+        }
+    }
+    return render_template('analytics_dashboard.html', analytics=analytics_data, get_text=get_text, current_lang=get_current_language())
 
 @app.route('/api/companies')
 def api_companies():

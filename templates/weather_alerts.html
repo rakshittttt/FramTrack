@@ -1,0 +1,135 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>🌦️ Weather Alerts & Maintenance Tips</h1>
+    <p>Stay ahead of weather changes and protect your tractor investment</p>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+    <div>
+        <h2 style="color: #2c5530; margin-bottom: 1rem;">⚠️ Current Weather Alerts</h2>
+        {% for alert in alerts %}
+        <div class="card" style="border-left: 4px solid {% if alert.severity == 'High' %}#e74c3c{% elif alert.severity == 'Medium' %}#f39c12{% else %}#27ae60{% endif %};">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="color: #2c5530;">{{ alert.region }}</h3>
+                <span style="background: {% if alert.severity == 'High' %}#e74c3c{% elif alert.severity == 'Medium' %}#f39c12{% else %}#27ae60{% endif %}; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem;">
+                    {{ alert.severity }}
+                </span>
+            </div>
+            <p style="margin-bottom: 10px;">{{ alert.alert }}</p>
+            <small style="color: #666;">📅 {{ alert.date }}</small>
+        </div>
+        {% endfor %}
+        
+        <div class="card">
+            <h2>🛠️ Seasonal Maintenance Calendar</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px;">
+                    <h4 style="color: #2c5530;">🌱 Spring (Mar-May)</h4>
+                    <ul style="margin-left: 20px; color: #666;">
+                        <li>Change engine oil and filters</li>
+                        <li>Check tire pressure and tread</li>
+                        <li>Inspect hydraulic fluid levels</li>
+                        <li>Lubricate all grease points</li>
+                    </ul>
+                </div>
+                <div style="background: #fff3cd; padding: 1rem; border-radius: 8px;">
+                    <h4 style="color: #2c5530;">☀️ Summer (Jun-Aug)</h4>
+                    <ul style="margin-left: 20px; color: #666;">
+                        <li>Clean air filters frequently</li>
+                        <li>Monitor coolant levels</li>
+                        <li>Check belt tension</li>
+                        <li>Inspect radiator for clogs</li>
+                    </ul>
+                </div>
+                <div style="background: #d4edda; padding: 1rem; border-radius: 8px;">
+                    <h4 style="color: #2c5530;">🍂 Monsoon (Jul-Sep)</h4>
+                    <ul style="margin-left: 20px; color: #666;">
+                        <li>Waterproof electrical connections</li>
+                        <li>Check brake fluid levels</li>
+                        <li>Inspect for rust formation</li>
+                        <li>Clean fuel tank water separator</li>
+                    </ul>
+                </div>
+                <div style="background: #cce5ff; padding: 1rem; border-radius: 8px;">
+                    <h4 style="color: #2c5530;">❄️ Winter (Oct-Feb)</h4>
+                    <ul style="margin-left: 20px; color: #666;">
+                        <li>Use winter-grade oils</li>
+                        <li>Check battery condition</li>
+                        <li>Inspect fuel system</li>
+                        <li>Store properly if not in use</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div>
+        <div class="card">
+            <h3>📱 Get Alerts on Your Phone</h3>
+            <p style="margin: 1rem 0; color: #666;">Subscribe to weather alerts and maintenance reminders</p>
+            <form style="margin: 1rem 0;">
+                <input type="tel" placeholder="Your mobile number" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px;">
+                <input type="text" placeholder="Your region" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px;">
+                <button type="submit" class="btn" style="width: 100%;">Subscribe to Alerts</button>
+            </form>
+        </div>
+        
+        <div class="card">
+            <h3>🎯 Quick Maintenance Checklist</h3>
+            <div style="margin: 1rem 0;">
+                <label style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <input type="checkbox" style="margin-right: 10px;"> Engine oil level checked
+                </label>
+                <label style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <input type="checkbox" style="margin-right: 10px;"> Air filter cleaned
+                </label>
+                <label style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <input type="checkbox" style="margin-right: 10px;"> Tire pressure verified
+                </label>
+                <label style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <input type="checkbox" style="margin-right: 10px;"> Hydraulic fluid topped up
+                </label>
+                <label style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <input type="checkbox" style="margin-right: 10px;"> Coolant level checked
+                </label>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📊 Weather Impact Stats</h3>
+            <div style="margin: 1rem 0;">
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Rain damage incidents</span>
+                        <span style="font-weight: bold;">23%</span>
+                    </div>
+                    <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
+                        <div style="background: #3498db; width: 23%; height: 100%; border-radius: 4px;"></div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Heat-related issues</span>
+                        <span style="font-weight: bold;">31%</span>
+                    </div>
+                    <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
+                        <div style="background: #e74c3c; width: 31%; height: 100%; border-radius: 4px;"></div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Dust-related problems</span>
+                        <span style="font-weight: bold;">46%</span>
+                    </div>
+                    <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
+                        <div style="background: #f39c12; width: 46%; height: 100%; border-radius: 4px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
