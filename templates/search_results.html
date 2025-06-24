@@ -5,13 +5,13 @@
 
 {% block content %}
 <div style="margin-bottom: 2rem;">
-    <a href="/" style="color: #4a7c59; text-decoration: none;">← Back to Top Companies</a>
+    <a href="/" style="color: #4a7c59; text-decoration: none;">← {{ get_text('back_to_companies') }}</a>
 </div>
 
-<h1 style="color: #2c5530; margin-bottom: 1rem;">Search Results for "{{ query }}"</h1>
+<h1 style="color: #2c5530; margin-bottom: 1rem;">{% if current_lang == 'hi' %}"{{ query }}" के लिए खोज परिणाम{% elif current_lang == 'pa' %}"{{ query }}" ਲਈ ਖੋਜ ਨਤੀਜੇ{% else %}Search Results for "{{ query }}"{% endif %}</h1>
 
 {% if results %}
-    <p style="color: #666; margin-bottom: 2rem;">Found {{ results|length }} company(ies) matching your search:</p>
+    <p style="color: #666; margin-bottom: 2rem;">{% if current_lang == 'hi' %}{{ results|length }} कंपनी(यां) आपकी खोज से मेल खाती हैं:{% elif current_lang == 'pa' %}{{ results|length }} ਕੰਪਨੀ(ਆਂ) ਤੁਹਾਡੀ ਖੋਜ ਨਾਲ ਮੇਲ ਖਾਂਦੀ ਹੈ:{% else %}Found {{ results|length }} company(ies) matching your search:{% endif %}</p>
     
     <div class="company-grid">
         {% for company in results %}
@@ -20,15 +20,15 @@
             <h2 style="color: #2c5530; margin-bottom: 10px;">{{ company.name }}</h2>
             
             <div style="margin: 15px 0;">
-                <strong>Annual Sales:</strong> {{ "{:,}".format(company.annual_sales) }} units<br>
-                <strong>Price Range:</strong> {{ company.price_range }}<br>
-                <strong>Rating:</strong> 
+                <strong>{{ get_text('annual_sales') }}:</strong> {{ "{:,}".format(company.annual_sales) }} {% if current_lang == 'hi' %}इकाई{% elif current_lang == 'pa' %}ਯੂਨਿਟ{% else %}units{% endif %}<br>
+                <strong>{{ get_text('price_range') }}:</strong> {{ company.price_range }}<br>
+                <strong>{{ get_text('rating') }}:</strong> 
                 <span class="rating">
                     {% for i in range(5) %}
                         {% if i < company.avg_rating %}⭐{% else %}☆{% endif %}
                     {% endfor %}
                 </span>
-                {{ company.avg_rating }}/5 ({{ company.total_reviews }} reviews)
+                {{ company.avg_rating }}/5 ({{ company.total_reviews }} {% if current_lang == 'hi' %}समीक्षाएं{% elif current_lang == 'pa' %}ਸਮੀਖਿਆਵਾਂ{% else %}reviews{% endif %})
             </div>
             
             <div style="margin: 15px 0;">

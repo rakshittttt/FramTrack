@@ -3,30 +3,30 @@
 
 {% block content %}
 <div class="hero">
-    <h1>🌾 Top 5 Tractor Companies Based on Sales Performance</h1>
+    <h1>🌾 {{ get_text('tagline') }}</h1>
     <p style="font-size: 1.1rem; margin: 1rem 0; color: #666;">
-        Discover the best tractor brands trusted by thousands of farmers. Rankings based on last year's sales data and farmer reviews.
+        {{ get_text('description') }}
     </p>
 </div>
 
 <div class="stats" style="background: white; padding: 2rem; border-radius: 10px; margin: 2rem 0; text-align: center;">
-    <h2 style="color: #2c5530; margin-bottom: 1rem;">Why These Top 5?</h2>
+    <h2 style="color: #2c5530; margin-bottom: 1rem;">{{ get_text('why_top_5') }}</h2>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
         <div>
-            <h3 style="color: #4a7c59;">📈 Highest Sales</h3>
-            <p>Based on 2023 sales data</p>
+            <h3 style="color: #4a7c59;">📈 {{ get_text('highest_sales') }}</h3>
+            <p>{% if current_lang == 'hi' %}2023 बिक्री डेटा के आधार पर{% elif current_lang == 'pa' %}2023 ਵਿਕਰੀ ਡੇਟਾ ਦੇ ਆਧਾਰ ਤੇ{% else %}Based on 2023 sales data{% endif %}</p>
         </div>
         <div>
-            <h3 style="color: #4a7c59;">💰 Best Value</h3>
-            <p>Reasonable pricing for quality</p>
+            <h3 style="color: #4a7c59;">💰 {{ get_text('best_value') }}</h3>
+            <p>{% if current_lang == 'hi' %}गुणवत्ता के लिए उचित मूल्य{% elif current_lang == 'pa' %}ਗੁਣਵੱਤਾ ਲਈ ਵਾਜਬ ਮੁੱਲ{% else %}Reasonable pricing for quality{% endif %}</p>
         </div>
         <div>
-            <h3 style="color: #4a7c59;">⭐ Farmer Verified</h3>
-            <p>Real reviews from farmers</p>
+            <h3 style="color: #4a7c59;">⭐ {{ get_text('farmer_verified') }}</h3>
+            <p>{% if current_lang == 'hi' %}किसानों की वास्तविक समीक्षा{% elif current_lang == 'pa' %}ਕਿਸਾਨਾਂ ਦੀ ਅਸਲ ਸਮੀਖਿਆ{% else %}Real reviews from farmers{% endif %}</p>
         </div>
         <div>
-            <h3 style="color: #4a7c59;">🔧 Reliable Service</h3>
-            <p>Strong after-sales support</p>
+            <h3 style="color: #4a7c59;">🔧 {{ get_text('reliable_service') }}</h3>
+            <p>{% if current_lang == 'hi' %}मजबूत बिक्री-पश्चात सहायता{% elif current_lang == 'pa' %}ਮਜ਼ਬੂਤ ਵਿਕਰੀ-ਪਿੱਛੇ ਸਹਾਇਤਾ{% else %}Strong after-sales support{% endif %}</p>
         </div>
     </div>
 </div>
@@ -38,19 +38,19 @@
         <h2 style="color: #2c5530; margin-bottom: 10px;">{{ company.name }}</h2>
         
         <div style="margin: 15px 0;">
-            <strong>Annual Sales:</strong> {{ "{:,}".format(company.annual_sales) }} units<br>
-            <strong>Price Range:</strong> {{ company.price_range }}<br>
-            <strong>Rating:</strong> 
+            <strong>{{ get_text('annual_sales') }}:</strong> {{ "{:,}".format(company.annual_sales) }} {% if current_lang == 'hi' %}इकाई{% elif current_lang == 'pa' %}ਯੂਨਿਟ{% else %}units{% endif %}<br>
+            <strong>{{ get_text('price_range') }}:</strong> {{ company.price_range }}<br>
+            <strong>{{ get_text('rating') }}:</strong> 
             <span class="rating">
                 {% for i in range(5) %}
                     {% if i < company.avg_rating %}⭐{% else %}☆{% endif %}
                 {% endfor %}
             </span>
-            {{ company.avg_rating }}/5 ({{ company.total_reviews }} reviews)
+            {{ company.avg_rating }}/5 ({{ company.total_reviews }} {% if current_lang == 'hi' %}समीक्षाएं{% elif current_lang == 'pa' %}ਸਮੀਖਿਆਵਾਂ{% else %}reviews{% endif %})
         </div>
         
         <div style="margin: 15px 0;">
-            <strong>Popular Models:</strong>
+            <strong>{{ get_text('popular_models') }}:</strong>
             <ul style="margin-left: 20px; margin-top: 5px;">
                 {% for model in company.popular_models %}
                 <li>{{ model }}</li>
@@ -58,7 +58,7 @@
             </ul>
         </div>
         
-        <a href="/company/{{ company.id }}" class="btn">View Reviews & Details</a>
+        <a href="/company/{{ company.id }}" class="btn">{{ get_text('view_reviews') }}</a>
     </div>
     {% endfor %}
 </div>

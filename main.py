@@ -1,8 +1,98 @@
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
 import json
 
 app = Flask(__name__)
+app.secret_key = 'your-secret-key-for-sessions'
+
+# Language translations
+LANGUAGES = {
+    'en': {
+        'title': 'FarmTech Tractor Reviews',
+        'tagline': 'Top 5 Tractor Companies Based on Sales Performance',
+        'description': 'Discover the best tractor brands trusted by thousands of farmers. Rankings based on last year\'s sales data and farmer reviews.',
+        'search_placeholder': 'Search tractors, companies...',
+        'search_btn': 'Search',
+        'why_top_5': 'Why These Top 5?',
+        'highest_sales': 'Highest Sales',
+        'best_value': 'Best Value', 
+        'farmer_verified': 'Farmer Verified',
+        'reliable_service': 'Reliable Service',
+        'annual_sales': 'Annual Sales',
+        'price_range': 'Price Range',
+        'rating': 'Rating',
+        'popular_models': 'Popular Models',
+        'view_reviews': 'View Reviews & Details',
+        'back_to_companies': 'Back to Top Companies',
+        'sales_performance': 'Sales Performance',
+        'market_position': 'Market Position',
+        'pricing': 'Pricing',
+        'customer_satisfaction': 'Customer Satisfaction',
+        'farmer_reviews': 'Farmer Reviews',
+        'verified_purchase': 'Verified Purchase',
+        'model': 'Model',
+        'no_reviews': 'No reviews available yet. Be the first to review!'
+    },
+    'hi': {
+        'title': 'फार्मटेक ट्रैक्टर समीक्षा',
+        'tagline': 'बिक्री प्रदर्शन के आधार पर शीर्ष 5 ट्रैक्टर कंपनियां',
+        'description': 'हजारों किसानों द्वारा भरोसा किए गए सर्वोत्तम ट्रैक्टर ब्रांड खोजें। पिछले साल के बिक्री डेटा और किसान समीक्षाओं के आधार पर रैंकिंग।',
+        'search_placeholder': 'ट्रैक्टर, कंपनियां खोजें...',
+        'search_btn': 'खोजें',
+        'why_top_5': 'ये शीर्ष 5 क्यों?',
+        'highest_sales': 'उच्चतम बिक्री',
+        'best_value': 'सर्वोत्तम मूल्य',
+        'farmer_verified': 'किसान सत्यापित',
+        'reliable_service': 'विश्वसनीय सेवा',
+        'annual_sales': 'वार्षिक बिक्री',
+        'price_range': 'मूल्य सीमा',
+        'rating': 'रेटिंग',
+        'popular_models': 'लोकप्रिय मॉडल',
+        'view_reviews': 'समीक्षा और विवरण देखें',
+        'back_to_companies': 'शीर्ष कंपनियों पर वापस जाएं',
+        'sales_performance': 'बिक्री प्रदर्शन',
+        'market_position': 'बाजार स्थिति',
+        'pricing': 'मूल्य निर्धारण',
+        'customer_satisfaction': 'ग्राहक संतुष्टि',
+        'farmer_reviews': 'किसान समीक्षा',
+        'verified_purchase': 'सत्यापित खरीद',
+        'model': 'मॉडल',
+        'no_reviews': 'अभी तक कोई समीक्षा उपलब्ध नहीं है। पहले समीक्षा करें!'
+    },
+    'pa': {
+        'title': 'ਫਾਰਮਟੈਕ ਟਰੈਕਟਰ ਸਮੀਖਿਆਵਾਂ',
+        'tagline': 'ਵਿਕਰੀ ਪ੍ਰਦਰਸ਼ਨ ਦੇ ਆਧਾਰ ਤੇ ਸਿਖਰਲੀਆਂ 5 ਟਰੈਕਟਰ ਕੰਪਨੀਆਂ',
+        'description': 'ਹਜ਼ਾਰਾਂ ਕਿਸਾਨਾਂ ਦੁਆਰਾ ਭਰੋਸਾ ਕੀਤੇ ਗਏ ਸਭ ਤੋਂ ਵਧੀਆ ਟਰੈਕਟਰ ਬ੍ਰਾਂਡਾਂ ਦੀ ਖੋਜ ਕਰੋ। ਪਿਛਲੇ ਸਾਲ ਦੇ ਵਿਕਰੀ ਡੇਟਾ ਅਤੇ ਕਿਸਾਨ ਸਮੀਖਿਆਵਾਂ ਦੇ ਆਧਾਰ ਤੇ ਰੈਂਕਿੰਗ।',
+        'search_placeholder': 'ਟਰੈਕਟਰ, ਕੰਪਨੀਆਂ ਖੋਜੋ...',
+        'search_btn': 'ਖੋਜੋ',
+        'why_top_5': 'ਇਹ ਸਿਖਰਲੇ 5 ਕਿਉਂ?',
+        'highest_sales': 'ਸਭ ਤੋਂ ਵੱਧ ਵਿਕਰੀ',
+        'best_value': 'ਸਭ ਤੋਂ ਵਧੀਆ ਮੁੱਲ',
+        'farmer_verified': 'ਕਿਸਾਨ ਸਤਿਆਪਿਤ',
+        'reliable_service': 'ਭਰੋਸੇਮੰਦ ਸੇਵਾ',
+        'annual_sales': 'ਸਲਾਨਾ ਵਿਕਰੀ',
+        'price_range': 'ਕੀਮਤ ਸੀਮਾ',
+        'rating': 'ਰੇਟਿੰਗ',
+        'popular_models': 'ਪ੍ਰਸਿੱਧ ਮਾਡਲ',
+        'view_reviews': 'ਸਮੀਖਿਆਵਾਂ ਅਤੇ ਵੇਰਵੇ ਦੇਖੋ',
+        'back_to_companies': 'ਸਿਖਰਲੀਆਂ ਕੰਪਨੀਆਂ ਤੇ ਵਾਪਸ ਜਾਓ',
+        'sales_performance': 'ਵਿਕਰੀ ਪ੍ਰਦਰਸ਼ਨ',
+        'market_position': 'ਬਾਜ਼ਾਰ ਸਥਿਤੀ',
+        'pricing': 'ਕੀਮਤ ਨਿਰਧਾਰਨ',
+        'customer_satisfaction': 'ਗ੍ਰਾਹਕ ਸੰਤੁਸ਼ਟੀ',
+        'farmer_reviews': 'ਕਿਸਾਨ ਸਮੀਖਿਆਵਾਂ',
+        'verified_purchase': 'ਸਤਿਆਪਿਤ ਖਰੀਦ',
+        'model': 'ਮਾਡਲ',
+        'no_reviews': 'ਅਜੇ ਤੱਕ ਕੋਈ ਸਮੀਖਿਆ ਉਪਲਬਧ ਨਹੀਂ ਹੈ। ਪਹਿਲੇ ਸਮੀਖਿਆ ਕਰੋ!'
+    }
+}
+
+def get_current_language():
+    return session.get('language', 'en')
+
+def get_text(key):
+    lang = get_current_language()
+    return LANGUAGES[lang].get(key, LANGUAGES['en'][key])
 
 # Sample data for top 5 tractor companies based on sales
 TRACTOR_COMPANIES = [
@@ -107,9 +197,15 @@ FARMER_REVIEWS = [
     }
 ]
 
+@app.route('/set_language/<lang>')
+def set_language(lang):
+    if lang in LANGUAGES:
+        session['language'] = lang
+    return request.referrer or '/'
+
 @app.route('/')
 def home():
-    return render_template('index.html', companies=TRACTOR_COMPANIES)
+    return render_template('index.html', companies=TRACTOR_COMPANIES, get_text=get_text, current_lang=get_current_language())
 
 @app.route('/company/<int:company_id>')
 def company_details(company_id):
@@ -120,7 +216,7 @@ def company_details(company_id):
     # Get reviews for this company
     company_reviews = [r for r in FARMER_REVIEWS if r['company_id'] == company_id]
     
-    return render_template('company_details.html', company=company, reviews=company_reviews)
+    return render_template('company_details.html', company=company, reviews=company_reviews, get_text=get_text, current_lang=get_current_language())
 
 @app.route('/search')
 def search():
@@ -139,7 +235,7 @@ def search():
                         results.append(company)
                         break
     
-    return render_template('search_results.html', results=results, query=query)
+    return render_template('search_results.html', results=results, query=query, get_text=get_text, current_lang=get_current_language())
 
 @app.route('/api/companies')
 def api_companies():

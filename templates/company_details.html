@@ -5,7 +5,7 @@
 
 {% block content %}
 <div style="margin-bottom: 2rem;">
-    <a href="/" style="color: #4a7c59; text-decoration: none;">← Back to Top Companies</a>
+    <a href="/" style="color: #4a7c59; text-decoration: none;">← {{ get_text('back_to_companies') }}</a>
 </div>
 
 <div class="card" style="margin-bottom: 2rem;">
@@ -14,20 +14,20 @@
     
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
         <div>
-            <h3 style="color: #4a7c59;">📈 Sales Performance</h3>
-            <p><strong>Annual Sales:</strong> {{ "{:,}".format(company.annual_sales) }} units</p>
-            <p><strong>Market Position:</strong> #{{ company.sales_rank }} in India</p>
+            <h3 style="color: #4a7c59;">📈 {{ get_text('sales_performance') }}</h3>
+            <p><strong>{{ get_text('annual_sales') }}:</strong> {{ "{:,}".format(company.annual_sales) }} {% if current_lang == 'hi' %}इकाई{% elif current_lang == 'pa' %}ਯੂਨਿਟ{% else %}units{% endif %}</p>
+            <p><strong>{{ get_text('market_position') }}:</strong> #{{ company.sales_rank }} {% if current_lang == 'hi' %}भारत में{% elif current_lang == 'pa' %}ਭਾਰਤ ਵਿੱਚ{% else %}in India{% endif %}</p>
         </div>
         
         <div>
-            <h3 style="color: #4a7c59;">💰 Pricing</h3>
-            <p><strong>Price Range:</strong> {{ company.price_range }}</p>
-            <p><strong>Value Rating:</strong> Excellent for the price point</p>
+            <h3 style="color: #4a7c59;">💰 {{ get_text('pricing') }}</h3>
+            <p><strong>{{ get_text('price_range') }}:</strong> {{ company.price_range }}</p>
+            <p><strong>{% if current_lang == 'hi' %}मूल्य रेटिंग{% elif current_lang == 'pa' %}ਮੁੱਲ ਰੇਟਿੰਗ{% else %}Value Rating{% endif %}:</strong> {% if current_lang == 'hi' %}मूल्य बिंदु के लिए उत्कृष्ट{% elif current_lang == 'pa' %}ਮੁੱਲ ਬਿੰਦੂ ਲਈ ਸ਼ਾਨਦਾਰ{% else %}Excellent for the price point{% endif %}</p>
         </div>
         
         <div>
-            <h3 style="color: #4a7c59;">⭐ Customer Satisfaction</h3>
-            <p><strong>Overall Rating:</strong> 
+            <h3 style="color: #4a7c59;">⭐ {{ get_text('customer_satisfaction') }}</h3>
+            <p><strong>{% if current_lang == 'hi' %}समग्र रेटिंग{% elif current_lang == 'pa' %}ਸਮੁੱਚੀ ਰੇਟਿੰਗ{% else %}Overall Rating{% endif %}:</strong> 
                 <span class="rating">
                     {% for i in range(5) %}
                         {% if i < company.avg_rating %}⭐{% else %}☆{% endif %}
@@ -35,25 +35,25 @@
                 </span>
                 {{ company.avg_rating }}/5
             </p>
-            <p><strong>Total Reviews:</strong> {{ company.total_reviews }} verified farmers</p>
+            <p><strong>{% if current_lang == 'hi' %}कुल समीक्षा{% elif current_lang == 'pa' %}ਕੁੱਲ ਸਮੀਖਿਆਵਾਂ{% else %}Total Reviews{% endif %}:</strong> {{ company.total_reviews }} {% if current_lang == 'hi' %}सत्यापित किसान{% elif current_lang == 'pa' %}ਸਤਿਆਪਿਤ ਕਿਸਾਨ{% else %}verified farmers{% endif %}</p>
         </div>
     </div>
 </div>
 
 <div class="card">
-    <h2 style="color: #2c5530; margin-bottom: 1rem;">Popular Models</h2>
+    <h2 style="color: #2c5530; margin-bottom: 1rem;">{{ get_text('popular_models') }}</h2>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
         {% for model in company.popular_models %}
         <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; text-align: center;">
             <h4 style="color: #4a7c59;">{{ model }}</h4>
-            <p style="font-size: 0.9rem; color: #666;">High Performance</p>
+            <p style="font-size: 0.9rem; color: #666;">{% if current_lang == 'hi' %}उच्च प्रदर्शन{% elif current_lang == 'pa' %}ਉਚ ਪ੍ਰਦਰਸ਼ਨ{% else %}High Performance{% endif %}</p>
         </div>
         {% endfor %}
     </div>
 </div>
 
 <div class="card">
-    <h2 style="color: #2c5530; margin-bottom: 1rem;">Farmer Reviews</h2>
+    <h2 style="color: #2c5530; margin-bottom: 1rem;">{{ get_text('farmer_reviews') }}</h2>
     {% if reviews %}
         {% for review in reviews %}
         <div style="border-left: 4px solid #4a7c59; padding-left: 1rem; margin-bottom: 1.5rem; background: #f8f9fa; padding: 1rem; border-radius: 0 8px 8px 0;">
@@ -71,12 +71,12 @@
                     {% endfor %}
                 </div>
             </div>
-            <p style="margin-bottom: 10px;"><strong>Model:</strong> {{ review.model }}</p>
+            <p style="margin-bottom: 10px;"><strong>{{ get_text('model') }}:</strong> {{ review.model }}</p>
             <p style="font-style: italic;">"{{ review.review }}"</p>
         </div>
         {% endfor %}
     {% else %}
-        <p style="text-align: center; color: #666; padding: 2rem;">No reviews available yet. Be the first to review!</p>
+        <p style="text-align: center; color: #666; padding: 2rem;">{{ get_text('no_reviews') }}</p>
     {% endif %}
 </div>
 
