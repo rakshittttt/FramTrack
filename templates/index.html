@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block content %}
@@ -36,7 +35,7 @@
     <div class="card">
         <div class="rank-badge">Rank #{{ company.sales_rank }}</div>
         <h2 style="color: #2c5530; margin-bottom: 10px;">{{ company.name }}</h2>
-        
+
         <div style="margin: 15px 0;">
             <strong>{{ get_text('annual_sales') }}:</strong> {{ "{:,}".format(company.annual_sales) }} {% if current_lang == 'hi' %}इकाई{% elif current_lang == 'pa' %}ਯੂਨਿਟ{% else %}units{% endif %}<br>
             <strong>{{ get_text('price_range') }}:</strong> {{ company.price_range }}<br>
@@ -48,7 +47,7 @@
             </span>
             {{ company.avg_rating }}/5 ({{ company.total_reviews }} {% if current_lang == 'hi' %}समीक्षाएं{% elif current_lang == 'pa' %}ਸਮੀਖਿਆਵਾਂ{% else %}reviews{% endif %})
         </div>
-        
+
         <div style="margin: 15px 0;">
             <strong>{{ get_text('popular_models') }}:</strong>
             <ul style="margin-left: 20px; margin-top: 5px;">
@@ -57,26 +56,30 @@
                 {% endfor %}
             </ul>
         </div>
-        
+
         <a href="/company/{{ company.id }}" class="btn">{{ get_text('view_reviews') }}</a>
     </div>
     {% endfor %}
 </div>
 
-<div style="background: white; padding: 2rem; border-radius: 10px; margin: 2rem 0;">
-    <h2 style="color: #2c5530; text-align: center; margin-bottom: 1rem;">How We Rank Tractor Companies</h2>
+<div style="background: linear-gradient(135deg, rgba(58, 77, 58, 0.9) 0%, rgba(76, 96, 76, 0.85) 100%); border: 1px solid rgba(139, 195, 74, 0.3); backdrop-filter: blur(10px); padding: 2rem; border-radius: 12px; margin: 2rem 0; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+    <h2 style="color: #c8e6c9; text-align: center; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">How We Rank Tractor Companies</h2>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
-        <div style="text-align: center;">
-            <h3 style="color: #4a7c59;">📊 Sales Data</h3>
-            <p>We analyze annual sales figures to identify the most trusted brands in the market.</p>
+        <div style="text-align: center; background: rgba(42, 62, 42, 0.6); padding: 1.5rem; border-radius: 10px; border: 1px solid rgba(139, 195, 74, 0.2); transition: transform 0.3s ease;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+            <h3 style="color: #a5d6a7; margin-bottom: 0.8rem;">📊 Sales Data</h3>
+            <p style="color: #d7ead7;">We analyze annual sales figures to identify the most trusted brands in the market.</p>
         </div>
-        <div style="text-align: center;">
-            <h3 style="color: #4a7c59;">👨‍🌾 Farmer Reviews</h3>
-            <p>Real feedback from verified farmers who have purchased and used these tractors.</p>
+        <div style="text-align: center; background: rgba(42, 62, 42, 0.6); padding: 1.5rem; border-radius: 10px; border: 1px solid rgba(139, 195, 74, 0.2); transition: transform 0.3s ease;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+            <h3 style="color: #a5d6a7; margin-bottom: 0.8rem;">⭐ Customer Reviews</h3>
+            <p style="color: #d7ead7;">Real feedback from farmers who have purchased and used these tractors in their fields.</p>
         </div>
-        <div style="text-align: center;">
-            <h3 style="color: #4a7c59;">💵 Value Analysis</h3>
-            <p>We consider price-to-performance ratio to ensure reasonable pricing.</p>
+        <div style="text-align: center; background: rgba(42, 62, 42, 0.6); padding: 1.5rem; border-radius: 10px; border: 1px solid rgba(139, 195, 74, 0.2); transition: transform 0.3s ease;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+            <h3 style="color: #a5d6a7; margin-bottom: 0.8rem;">💰 Value for Money</h3>
+            <p style="color: #d7ead7;">We consider pricing, features, and long-term reliability to ensure you get the best value.</p>
+        </div>
+        <div style="text-align: center; background: rgba(42, 62, 42, 0.6); padding: 1.5rem; border-radius: 10px; border: 1px solid rgba(139, 195, 74, 0.2); transition: transform 0.3s ease;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+            <h3 style="color: #a5d6a7; margin-bottom: 0.8rem;">🔧 Service Network</h3>
+            <p style="color: #d7ead7;">Availability of service centers and spare parts across different regions is crucial for farmers.</p>
         </div>
     </div>
 </div>
