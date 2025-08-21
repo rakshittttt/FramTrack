@@ -3,6 +3,13 @@ from flask import Flask, render_template, request, jsonify, session
 import json
 import random
 from datetime import datetime, timedelta
+from typing import Any, Dict
+
+try:
+    from services.tractorguru_client import TractorGuruClient
+    tg_client = TractorGuruClient()
+except Exception:
+    tg_client = None
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-for-sessions'
@@ -400,6 +407,45 @@ def analytics_dashboard():
 @app.route('/api/companies')
 def api_companies():
     return jsonify(TRACTOR_COMPANIES)
+
+# ========== TractorGuru integration (scraped public pages) ==========
+@app.route('/api/tractorguru/brands')
+def api_tg_brands():
+    if not tg_client:
+        return jsonify({"error": "TractorGuru client unavailable"}), 503
+    try:
+        brands = tg_client.get_brands()
+        return jsonify(brands)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
+@app.route('/api/tractorguru/brand_models')
+def api_tg_brand_models():
+    if not tg_client:
+        return jsonify({"error": "TractorGuru client unavailable"}), 503
+    brand_path = request.args.get('path', '')
+    if not brand_path:
+        return jsonify({"error": "Missing required query param: path"}), 400
+    try:
+        models = tg_client.get_brand_models(brand_path)
+        return jsonify(models)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
+@app.route('/api/tractorguru/model_details')
+def api_tg_model_details():
+    if not tg_client:
+        return jsonify({"error": "TractorGuru client unavailable"}), 503
+    model_path = request.args.get('path', '')
+    if not model_path:
+        return jsonify({"error": "Missing required query param: path"}), 400
+    try:
+        details = tg_client.get_model_details(model_path)
+        return jsonify(details)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
