@@ -44,11 +44,6 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-4. **Access the API:**
-- API Documentation: http://localhost:8000/docs
-- Alternative docs: http://localhost:8000/redoc
-- Health check: http://localhost:8000/api/v1/health
-
 ### Using Docker
 
 1. **Build and run with Docker:**
@@ -58,17 +53,6 @@ docker-compose up --build
 
 2. **Access at:** http://localhost:8000
 
-## 📡 API Endpoints
-
-### Main Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/v1/tractor-sales` | Get top 5 tractor companies data |
-| GET | `/api/v1/company/{company_name}` | Get specific company details |
-| GET | `/api/v1/market-trends` | Get historical market trends |
-| POST | `/api/v1/update-data` | Manually trigger data update |
-| GET | `/api/v1/health` | API health check |
 
 ### Example Responses
 
@@ -120,7 +104,6 @@ Since most agricultural APIs require expensive API keys, this project uses:
 ### Update Schedule
 
 - **Automatic Updates**: Every day at 00:00 and 12:00 UTC
-- **Manual Updates**: Via POST `/api/v1/update-data`
 - **Data Persistence**: SQLite database with historical tracking
 - **Failure Recovery**: Automatic retry mechanism for failed updates
 
@@ -262,18 +245,6 @@ getTractorSales().then(data => {
 - **Error Handling**: Comprehensive exception handling
 - **CORS Support**: Configurable cross-origin requests
 
-## 📝 API Documentation
-
-The API provides interactive documentation:
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-
-### Response Codes
-- `200`: Success
-- `404`: Company/resource not found
-- `503`: Service unavailable (data not ready)
-- `500`: Internal server error
-
 ## 🚀 Production Deployment
 
 ### Using Docker
@@ -308,30 +279,9 @@ export LOG_LEVEL=WARNING
 5. Push: `git push origin feature/new-feature`
 6. Create a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🎯 Roadmap
-
-### Upcoming Features
-- [ ] Redis caching for improved performance
-- [ ] WebSocket support for real-time updates
-- [ ] Advanced analytics and forecasting
-- [ ] Integration with more agricultural data sources
-- [ ] Mobile app API endpoints
-- [ ] GraphQL support
-- [ ] Machine learning price predictions
-
 ### Version History
 - **v2.0.0**: Enhanced with real-world data simulation and daily updates
 - **v1.0.0**: Basic FastAPI structure
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/rakshittttt/FramTrack/issues)
-- **Documentation**: API docs available at `/docs` endpoint
-- **Email**: Support available through GitHub
 
 ## 🏆 Acknowledgments
 
