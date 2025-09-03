@@ -270,15 +270,6 @@ export DATABASE_PATH=/data/framtrack.db
 export LOG_LEVEL=WARNING
 ```
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/new-feature`
-3. Make changes and add tests
-4. Commit: `git commit -am 'Add new feature'`
-5. Push: `git push origin feature/new-feature`
-6. Create a Pull Request
-
 ### Version History
 - **v2.0.0**: Enhanced with real-world data simulation and daily updates
 - **v1.0.0**: Basic FastAPI structure
